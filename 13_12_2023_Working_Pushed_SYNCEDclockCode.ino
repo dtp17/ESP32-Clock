@@ -29,6 +29,9 @@ int daylightOffset = 3600;  // Replace with your daylight savings offset in seco
 unsigned long previousMillis = 0;        // will store last time flash was updated
 const long interval = 1000;           // interval at which to flash (milliseconds)
 
+unsigned long startTimex = 0;
+const unsigned long twentyFourHours = 10000;
+
 
 #define DRESETPIN A0    //desk RESET button pin 
 #define DSTOPPIN  A1    //desk STOP button pin  
@@ -110,6 +113,7 @@ bool Run = true;
 void setup() {
   WiFi.mode(WIFI_STA);
   Serial.begin(115200);
+  startTimex = millis();
   //NeoPixel array setup
   for (int s = 0; s < 3; s++) {
     strip[s].begin(); // Initialize pins for output
@@ -146,6 +150,13 @@ void setup() {
 void loop() {
   input();
 
+  if (millis() - startTimex >= twentyFourHours) {
+    // It has been 24 hours
+    Serial.println("24 hours have passed.");
+    configTime(GMTOffset, daylightOffset, "pool.ntp.org", "time.nist.gov");
+    // Reset the start time
+    startTimex = millis();
+  }
   if (Mode1 == true) {
     readInputs();
     updateCounter();
