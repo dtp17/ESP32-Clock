@@ -37,7 +37,7 @@ void updateDisplay1() {
     strip[1].show();
   }
 
-  if (minsTens == 0 && hrsTens == 0 && hrsOnes == 0) {
+  if (minsTens == 0 && hrsTens == 0 &&hrsOnes == 0) {
     digitWrite(1, minsTens, 0);
     strip[1].show();
   } else {
@@ -185,22 +185,13 @@ void updateDisplay4() {
   int hrsTens = h / 10; //get the tens place of hours
   int hrsOnes = h % 10; //get the ones place of hours
 
-  if (hrsTens == 0 && hrsOnes == 8 && minsTens == 0 && minsOnes == 0) {// 08-10 190   2hrs
-    brightness = 190;
-  }
-  if (hrsTens == 1 && hrsOnes == 0 && minsTens == 0 && minsOnes == 0) {// 10-14 250   4hrs
-    brightness = 250;
-  }
-  if (hrsTens == 1 && hrsOnes == 4 && minsTens == 0 && minsOnes == 0) {// 14-20 190    6hrs
-    brightness = 190;
-  }
-  if (hrsTens == 2 && hrsOnes == 0 && minsTens == 0 && minsOnes == 0) {// 20-08 10     12hrs
-    brightness = 190;
-  }
+  /*
   for (int s = 0; s < 3; s++) {
     strip[s].setBrightness(brightness); // set strips to new brightness
   }
 
+  */
+  Serial.println("We are at 191 digitwrite");
   digitWrite(2, hrsTens, dispColor);
   Serial.println(hrsTens);
   strip[2].show();

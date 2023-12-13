@@ -112,8 +112,10 @@ void input() {
           digitWrite(2, 4, 3);
           strip[2].show();
           dStartState = digitalRead(DSTARTPIN);
+          
           if (dStartState != dStartLastState) {
             if (dStartState == LOW) { //the desk start button is pushed
+            
               Serial.print("mode ");
               Serial.print(counter);
               Serial.println(" selected");
@@ -125,10 +127,12 @@ void input() {
               Press = false;
               digitWrite(2, 4, 2);
               strip[2].show();
-
+            
             }
             dStartLastState = dStartState;
+            
           }
+
           break;
 
         case 5:

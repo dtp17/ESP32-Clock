@@ -331,7 +331,7 @@ void digitWrite(int digit, int val, int col) {
 
 
 ////////////////////////////////////////////////////////////////////////////////
-void segLight(char digit, int seg, int col) {
+void segLight(int digit, int seg, int col) {
   //use this to light up a segment
   //digit picks which neopixel strip
   //seg calls a segment
@@ -406,71 +406,71 @@ void segLight(char digit, int seg, int col) {
   if (seg == 1) {
     //light first 8
     for (int i = 1; i < 4; i++) {
-      strip[((int)digit)].setPixelColor(i, color[0], color[1], color[2]);
+      strip[digit].setPixelColor(i, color[0], color[1], color[2]);
     }
-    //strip(((int)digit)).show();
+    //strip(digit).show();
   }
   //seg A
   if (seg == 2) {
     //light second 8
     for (int i = 4; i < 7; i++) {
-      strip[((int)digit)].setPixelColor(i, color[0], color[1], color[2]);
+      strip[digit].setPixelColor(i, color[0], color[1], color[2]);
     }
-    //strip(((int)digit)).show();
+    //strip(digit).show();
   }
   //seg B
   if (seg == 3) {
     for (int i = 7; i < 10; i++) {
-      strip[((int)digit)].setPixelColor(i, color[0], color[1], color[2]);
+      strip[digit].setPixelColor(i, color[0], color[1], color[2]);
     }
-    //strip(((int)digit)).show();
+    //strip(digit).show();
   }
   //seg C
   if (seg == 4) {
     for (int i = 10; i < 13; i++) {
-      strip[((int)digit)].setPixelColor(i, color[0], color[1], color[2]);
+      strip[digit].setPixelColor(i, color[0], color[1], color[2]);
     }
     //strip.show();
   }
   //seg D
   if (seg == 5) {
     for (int i = 13; i < 16; i++) {
-      strip[((int)digit)].setPixelColor(i, color[0], color[1], color[2]);
+      strip[digit].setPixelColor(i, color[0], color[1], color[2]);
     }
-    //strip(((int)digit)).show();
+    //strip(digit).show();
   }
   //seg E
   if (seg == 6) {
     for (int i = 16; i < 19; i++) {
-      strip[((int)digit)].setPixelColor(i, color[0], color[1], color[2]);
+      strip[digit].setPixelColor(i, color[0], color[1], color[2]);
     }
-    //strip(((int)digit)).show();
+    //strip(digit).show();
   }
   //seg G
   if (seg == 7) {
     for (int i = 19; i < 22; i++) {
-      strip[((int)digit)].setPixelColor(i, color[0], color[1], color[2]);
+      strip[digit].setPixelColor(i, color[0], color[1], color[2]);
     }
-    //strip(((int)digit)).show();
+    //strip(digit).show();
   }
   //seg dp
   if (seg == 8) {
     for (int i = 22; i < 23; i++) {
-      strip[((int)digit)].setPixelColor(i, color[0], color[1], color[2]);
+      strip[digit].setPixelColor(i, color[0], color[1], color[2]);
     }
     //strip.show();
   }
   //Upper Colon left
   if (seg == 9) {
     for (int i = 0; i < 1; i++) {
-      strip[((int)digit)].setPixelColor(i, color[0], color[1], color[2]);
+      strip[digit].setPixelColor(i, color[0], color[1], color[2]);
     }
     //strip.show();
   }
   //Lower Colon right
   if (seg == 10) {
     for (int i = 23; i < 24; i++) {
-      strip[((int)digit)].setPixelColor(i, color[0], color[1], color[2]);
+      strip[digit].setPixelColor(i, color[0], color[1], color[2]);
     }
     //strip.show();
   }
@@ -487,71 +487,71 @@ void segLight(char digit, int seg, int col) {
   //seg F
   if (seg == 11) {
     for (int i = 25; i < 28; i++) {
-      strip[((int)digit)].setPixelColor(i, color[0], color[1], color[2]);
+      strip[digit].setPixelColor(i, color[0], color[1], color[2]);
     }
-    //strip(((int)digit)).show();
+    //strip(digit).show();
   }
   //seg A
   if (seg == 12) {
     //light second 8
     for (int i = 28; i < 31; i++) {
-      strip[((int)digit)].setPixelColor(i, color[0], color[1], color[2]);
+      strip[digit].setPixelColor(i, color[0], color[1], color[2]);
     }
-    //strip(((int)digit)).show();
+    //strip(digit).show();
   }
   //seg B
   if (seg == 13) {
     for (int i = 31; i < 34; i++) {
-      strip[((int)digit)].setPixelColor(i, color[0], color[1], color[2]);
+      strip[digit].setPixelColor(i, color[0], color[1], color[2]);
     }
-    //strip(((int)digit)).show();
+    //strip(digit).show();
   }
   //seg C
   if (seg == 14) {
     for (int i = 34; i < 37; i++) {
-      strip[((int)digit)].setPixelColor(i, color[0], color[1], color[2]);
+      strip[digit].setPixelColor(i, color[0], color[1], color[2]);
     }
     //strip.show();
   }
   //seg D
   if (seg == 15) {
     for (int i = 37; i < 40; i++) {
-      strip[((int)digit)].setPixelColor(i, color[0], color[1], color[2]);
+      strip[digit].setPixelColor(i, color[0], color[1], color[2]);
     }
-    //strip(((int)digit)).show();
+    //strip(digit).show();
   }
   //seg E
   if (seg == 16) {
     for (int i = 40; i < 43; i++) {
-      strip[((int)digit)].setPixelColor(i, color[0], color[1], color[2]);
+      strip[digit].setPixelColor(i, color[0], color[1], color[2]);
     }
-    //strip(((int)digit)).show();
+    //strip(digit).show();
   }
   //seg G
   if (seg == 17) {
     for (int i = 43; i < 46; i++) {
-      strip[((int)digit)].setPixelColor(i, color[0], color[1], color[2]);
+      strip[digit].setPixelColor(i, color[0], color[1], color[2]);
     }
-    //strip(((int)digit)).show();
+    //strip(digit).show();
   }
   //seg dp
   if (seg == 18) {
     for (int i = 46; i < 47; i++) {
-      strip[((int)digit)].setPixelColor(i, color[0], color[1], color[2]);
+      strip[digit].setPixelColor(i, color[0], color[1], color[2]);
     }
     //strip.show();
   }
   //Upper Colon left
   if (seg == 19) {
     for (int i = 24; i < 25; i++) {
-      strip[((int)digit)].setPixelColor(i, color[0], color[1], color[2]);
+      strip[digit].setPixelColor(i, color[0], color[1], color[2]);
     }
     //strip.show();
   }
   //Lower Colon right
   if (seg == 20) {
     for (int i = 47; i < 48; i++) {
-      strip[((int)digit)].setPixelColor(i, color[0], color[1], color[2]);
+      strip[digit].setPixelColor(i, color[0], color[1], color[2]);
     }
     //strip.show();
   }
