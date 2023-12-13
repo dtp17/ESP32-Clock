@@ -91,12 +91,14 @@ int calculateAutoBrightness(int hrsTens, int hrsOnes, int minsTens, int minsOnes
   int autoBright = 50;  // Default brightness
 
   // Define hours for each brightness level
-  int startHourLow = 20;
-  int endHourLow = 8;
-  int startHourMedium = 10;
-  int endHourMedium = 14;
-  int startHourHigh = 14;
-  int endHourHigh = 20;
+  int startHourLow = 23;
+  int endHourLow = 7;
+  int startHourMedium = 7;
+  int endHourMedium = 10;
+  int startHourHigh = 10;
+  int endHourHigh = 15;
+  int startHourSecondMedium = 15;
+  int endHourSecondMedium = 23;
 
   int brightLow = 10;
   int brightMed = 100;
@@ -107,14 +109,17 @@ int calculateAutoBrightness(int hrsTens, int hrsOnes, int minsTens, int minsOnes
 
   // Adjust brightness based on time
   if ((totalMinutes >= (startHourLow * 60) && totalMinutes < (endHourLow * 60)) ||
-      (totalMinutes >= (endHourHigh * 60) && totalMinutes < (startHourLow * 60))) {
-    // Low brightness for 2hrs or high brightness for 12hrs
-    autoBright = (totalMinutes < (endHourLow * 60)) ? brightMed : brightLow;
+      (totalMinutes >= (endHourSecondMedium * 60) && totalMinutes < (startHourLow * 60))) {
+    // Low brightness for 8hrs or high brightness for the rest of the day
+    autoBright = (totalMinutes < (endHourLow * 60)) ? brightLow : brightHig;
   } else if (totalMinutes >= (startHourMedium * 60) && totalMinutes < (endHourMedium * 60)) {
-    // Medium brightness for 4hrs
+    // Medium brightness for 3hrs (7 am to 10 am)
+    autoBright = brightMed;
+  } else if (totalMinutes >= (startHourHigh * 60) && totalMinutes < (endHourHigh * 60)) {
+    // High brightness for 5hrs (10 am to 3 pm)
     autoBright = brightHig;
-  } else if (totalMinutes >= (endHourMedium * 60) && totalMinutes < (startHourHigh * 60)) {
-    // Low brightness for 6hrs
+  } else if (totalMinutes >= (startHourSecondMedium * 60) && totalMinutes < (endHourSecondMedium * 60)) {
+    // Medium brightness for 8hrs (3 pm to 11 pm)
     autoBright = brightMed;
   }
 
