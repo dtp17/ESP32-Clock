@@ -1,12 +1,12 @@
 void updateDisplay1() {
   int secs = (ninjaMillisTime / 1000) % 60;
-  int mins = (ninjaMillisTime / 1000 / 60) % 60 ;
-  int hrs = (ninjaMillisTime / 1000 / 60 / 60) % 60 ;
+  int mins = (ninjaMillisTime / 1000 / 60) % 60;
+  int hrs = (ninjaMillisTime / 1000 / 60 / 60) % 60;
 
-  int secsTens = secs / 10; //get the tens place of seconds
-  int secsOnes = secs % 10; //get the ones place of seconds
-  int minsTens = mins / 10; //get the tens place of minutes
-  int minsOnes = mins % 10; //get the ones place of minutes
+  int secsTens = secs / 10;  //get the tens place of seconds
+  int secsOnes = secs % 10;  //get the ones place of seconds
+  int minsTens = mins / 10;  //get the tens place of minutes
+  int minsOnes = mins % 10;  //get the ones place of minutes
   int hrsTens = hrs / 10;
   int hrsOnes = hrs % 10;
 
@@ -37,7 +37,7 @@ void updateDisplay1() {
     strip[1].show();
   }
 
-  if (minsTens == 0 && hrsTens == 0 &&hrsOnes == 0) {
+  if (minsTens == 0 && hrsTens == 0 && hrsOnes == 0) {
     digitWrite(1, minsTens, 0);
     strip[1].show();
   } else {
@@ -64,17 +64,16 @@ void updateDisplay1() {
   }
   digitWrite(0, secsOnes + 10, dispColor);
   strip[0].show();
-
 }
 void updateDisplay2() {
   int tenths = (ninjaMillisTime / 100) % 10;
   int secs = (ninjaMillisTime / 1000) % 60;
-  int mins = (ninjaMillisTime / 1000 / 60) % 60 ;
-  int hrs = (ninjaMillisTime / 1000 / 60 / 60) % 60 ;
-  int secsTens = secs / 10; //get the tens place of seconds
-  int secsOnes = secs % 10; //get the ones place of seconds
-  int minsTens = mins / 10; //get the tens place of minutes
-  int minsOnes = mins % 10; //get the ones place of minutes
+  int mins = (ninjaMillisTime / 1000 / 60) % 60;
+  int hrs = (ninjaMillisTime / 1000 / 60 / 60) % 60;
+  int secsTens = secs / 10;  //get the tens place of seconds
+  int secsOnes = secs % 10;  //get the ones place of seconds
+  int minsTens = mins / 10;  //get the tens place of minutes
+  int minsOnes = mins % 10;  //get the ones place of minutes
   int hrsOnes = hrs % 10;
   //write to NeoPixel seven segments, colors:
   //0 = off
@@ -122,19 +121,18 @@ void updateDisplay2() {
   strip[0].show();
   digitWrite(0, tenths + 10, dispColor);
   strip[0].show();
-
 }
 void updateDisplay3() {
 
 
   int secs = (countdownTime / 1000) % 60;
-  int mins = (countdownTime / 1000 / 60) % 60 ;
-  int hrs = (countdownTime / 1000 / 60 / 60) % 60 ;
+  int mins = (countdownTime / 1000 / 60) % 60;
+  int hrs = (countdownTime / 1000 / 60 / 60) % 60;
 
-  int secsTens = secs / 10; //get the tens place of seconds
-  int secsOnes = secs % 10; //get the ones place of seconds
-  int minsTens = mins / 10; //get the tens place of minutes
-  int minsOnes = mins % 10; //get the ones place of minutes
+  int secsTens = secs / 10;  //get the tens place of seconds
+  int secsOnes = secs % 10;  //get the ones place of seconds
+  int minsTens = mins / 10;  //get the tens place of minutes
+  int minsOnes = mins % 10;  //get the ones place of minutes
   int hrsTens = hrs / 10;
   int hrsOnes = hrs % 10;
 
@@ -168,7 +166,6 @@ void updateDisplay3() {
   strip[0].show();
   digitWrite(0, secsOnes + 10, dispColor);
   strip[0].show();
-
 }
 
 void updateDisplay4() {
@@ -178,12 +175,15 @@ void updateDisplay4() {
   int h = timeinfo->tm_hour;
   int m = timeinfo->tm_min;
   int s = timeinfo->tm_sec;
-  int secsTens = s / 10; //get the tens place of seconds
-  int secsOnes = s % 10; //get the ones place of seconds
-  int minsTens = m / 10; //get the tens place of minutes
-  int minsOnes = m % 10; //get the ones place of minutes
-  int hrsTens = h / 10; //get the tens place of hours
-  int hrsOnes = h % 10; //get the ones place of hours
+
+
+
+  int secsTens = s / 10;  //get the tens place of seconds
+  int secsOnes = s % 10;  //get the ones place of seconds
+  int minsTens = m / 10;  //get the tens place of minutes
+  int minsOnes = m % 10;  //get the ones place of minutes
+  int hrsTens = h / 10;   //get the tens place of hours
+  int hrsOnes = h % 10;   //get the ones place of hours
 
   /*
   for (int s = 0; s < 3; s++) {
@@ -197,13 +197,13 @@ void updateDisplay4() {
   strip[2].show();
   digitWrite(2, hrsOnes + 10, dispColor);
   Serial.println(hrsOnes);
-  if (flash == true) {
+  if (secsOnes % 2 == 0) {
     segLight(2, 20, dispColor);
   } else {
     segLight(2, 20, 0);
   }
   strip[2].show();
-  if (flash == true) {
+  if (secsOnes % 2 == 0) {
     segLight(1, 9, dispColor);
   } else {
     segLight(1, 9, 0);
@@ -213,13 +213,13 @@ void updateDisplay4() {
   strip[1].show();
   digitWrite(1, minsOnes + 10, dispColor);
   Serial.println(minsOnes);
-  if (flash == true) {
+  if (secsOnes % 2 == 0) {
     segLight(1, 20, dispColor);
   } else {
     segLight(1, 20, 0);
   }
   strip[1].show();
-  if (flash == true) {
+  if (secsOnes % 2 == 0) {
     segLight(0, 9, dispColor);
   } else {
     segLight(0, 9, 0);
@@ -242,28 +242,26 @@ void updateDisplay4() {
   }
 }
 void updateDisplay5() {
-  int hundreds = bright / 100; //get the hundreds place of brightness
-  int tens = (bright - (100 * hundreds)) / 10; //get the tens place of brightness
-  int ones = (bright - (100 * hundreds)) % 10; //get the ones place of brightness
+    int hundreds = bright / 100;                  //get the hundreds place of brightness
+    int tens = (bright - (100 * hundreds)) / 10;  //get the tens place of brightness
+    int ones = (bright - (100 * hundreds)) % 10;  //get the ones place of brightness
 
 
 
-
-  if (hundreds == 0) {
-    digitWrite(1, hundreds + 10, 0);
-    strip[1].show();
-  } else {
-    digitWrite(1, hundreds + 10, dispColor);
-    strip[1].show();
-  }
-  if (tens == 0 && hundreds == 0) {
-    digitWrite(0, tens, 0);
+    if (hundreds == 0) {
+      digitWrite(1, hundreds + 10, 0);
+      strip[1].show();
+    } else {
+      digitWrite(1, hundreds + 10, dispColor);
+      strip[1].show();
+    }
+    if (tens == 0 && hundreds == 0) {
+      digitWrite(0, tens, 0);
+      strip[0].show();
+    } else {
+      digitWrite(0, tens, dispColor);
+      strip[0].show();
+    }
+    digitWrite(0, ones + 10, dispColor);
     strip[0].show();
-  } else {
-    digitWrite(0, tens, dispColor);
-    strip[0].show();
-  }
-  digitWrite(0, ones + 10, dispColor);
-  strip[0].show();
-
 }

@@ -5,38 +5,38 @@
 #endif
 #include <time.h>
 #include <Adafruit_NeoPixel.h>
-#include <WiFiManager.h> // https://github.com/tzapu/WiFiManager
+#include <WiFiManager.h>  // https://github.com/tzapu/WiFiManager
 
-#define NUMPIXELS 48 // # of LEDs in a strip (some are actually 56, some 57
+#define NUMPIXELS 48  // # of LEDs in a strip (some are actually 56, some 57
 // due to dots), each strip is a digit
-#define DATAPIN0 13 //digit 0 NeoPixel 60 strip far RIGHT
-#define DATAPIN1 12 //digit 1 plus lower colon dot
-#define DATAPIN2 11 //digit 2 plus upper colon dot
+#define DATAPIN0 13  //digit 0 NeoPixel 60 strip far RIGHT
+#define DATAPIN1 12  //digit 1 plus lower colon dot
+#define DATAPIN2 11  //digit 2 plus upper colon dot
 
 
-Adafruit_NeoPixel strip[] = { //here is the variable for the multiple strips
+Adafruit_NeoPixel strip[] = {  //here is the variable for the multiple strips
   Adafruit_NeoPixel(NUMPIXELS, DATAPIN0, NEO_GRB + NEO_KHZ800),
   Adafruit_NeoPixel(NUMPIXELS, DATAPIN1, NEO_GRB + NEO_KHZ800),
   Adafruit_NeoPixel(NUMPIXELS, DATAPIN2, NEO_GRB + NEO_KHZ800)
 };
 
 WiFiManager wm;
-int bright = 190; //brightness for all pixels 0-255 range, 32 being dim
-int brightness; // auto brightness
+int bright = 190;      //brightness for all pixels 0-255 range, 32 being dim
+int autoBright;  // auto brightness
 bool flash = true;
-int GMTOffset = 0;  //Replace with your GMT Offset in seconds
-int daylightOffset = 3600;  // Replace with your daylight savings offset in seconds
-unsigned long previousMillis = 0;        // will store last time flash was updated
-const long interval = 1000;           // interval at which to flash (milliseconds)
+int GMTOffset = 0;                 //Replace with your GMT Offset in seconds
+int daylightOffset = 3600;         // Replace with your daylight savings offset in seconds
+unsigned long previousMillis = 0;  // will store last time flash was updated
+const long interval = 1000;        // interval at which to flash (milliseconds)
 
 unsigned long startTimex = 0;
 const unsigned long twentyFourHours = 10000;
 
 
-#define DRESETPIN A0    //desk RESET button pin 
-#define DSTOPPIN  A1    //desk STOP button pin  
-#define DSTARTPIN A2    //desk START button pin
-#define DPAUSEPIN A3    //desk PAUSE button pin   
+#define DRESETPIN A0  //desk RESET button pin
+#define DSTOPPIN A1   //desk STOP button pin
+#define DSTARTPIN A2  //desk START button pin
+#define DPAUSEPIN A3  //desk PAUSE button pin
 
 int switchPin = A5;
 
@@ -44,26 +44,26 @@ int switchPin = A5;
 //Button states for reading the pushbuttons, since pullup: off = HIGH, on = LOW
 
 int dStartState = 1;
-int dStopState =  1;
+int dStopState = 1;
 int dPauseState = 1;
 int dResetState = 1;
 
 //variables for debouncing
 
 int dStartLastState = 1;
-int dStopLastState =  1;
+int dStopLastState = 1;
 int dPauseLastState = 1;
 int dResetLastState = 1;
 
 
-int runningMode = 0; //counter to tell overall state since reset
+int runningMode = 0;  //counter to tell overall state since reset
 //0 means it is a clean start, 1 means it's already running or ran
-int pauseMode = 0; //counter for using pause to stop and start timer
+int pauseMode = 0;  //counter for using pause to stop and start timer
 int stoppedMode = 0;
-int go = 0; //start counter once blinking/beeping is done
-int dispColor = 3; //color to call out for display, feeds other voids
+int go = 0;         //start counter once blinking/beeping is done
+int dispColor = 3;  //color to call out for display, feeds other voids
 int counter = 1;
-int timeout = 120; // seconds to run for
+int timeout = 120;  // seconds to run for
 int switchVal;
 int Chours = 0;
 int Cminutes = 0;
@@ -77,8 +77,10 @@ int Select = 0;
 
 volatile bool isNinjaCounting = false;  // true when start button pressed
 volatile uint32_t ninjaMillisTime = 0;  // the actual counter value
-volatile bool isNinjaDowning = false;  // true when start button pressed
-volatile uint32_t countdownTime = 0;  // the actual counter value
+volatile bool isNinjaDowning = false;   // true when start button pressed
+volatile uint32_t countdownTime = 0;    // the actual counter value
+
+//bool manual = false;
 
 // how often the inputs are readInputs
 const int inputsMillis = 10;
@@ -116,14 +118,14 @@ void setup() {
   startTimex = millis();
   //NeoPixel array setup
   for (int s = 0; s < 3; s++) {
-    strip[s].begin(); // Initialize pins for output
-    strip[s].setBrightness(bright); //full brightness 255
-    strip[s].show();  // Turn all LEDs off
+    strip[s].begin();                // Initialize pins for output
+    strip[s].setBrightness(bright);  //full brightness 255
+    strip[s].show();                 // Turn all LEDs off
     delay(200);
   }
   //flash dashes
   for (int t = 0; t < 3; t++) {
-    digitWrite(t, 20, 0); //blank
+    digitWrite(t, 20, 0);  //blank
     strip[t].show();
     segLight(t, 7, dispColor);
     segLight(t, 17, dispColor);
@@ -139,7 +141,7 @@ void setup() {
   pinMode(DRESETPIN, INPUT_PULLUP);
   pinMode(switchPin, INPUT_PULLUP);
   for (int t = 0; t < 3; t++) {
-    digitWrite(t, 20, 0); //blank
+    digitWrite(t, 20, 0);  //blank
     strip[t].show();
   }
 }
@@ -183,6 +185,7 @@ void loop() {
     }
     dispColor = 1;
     updateDisplay4();
+    automaticTime();
     ninjaMillisTime = 0;
   }
   if (Mode5 == true) {
@@ -196,11 +199,11 @@ void loop() {
 ////////////////////////////////////////////////////////////////////////////////
 // task called periodically by TaskScheduler
 void updateCounter() {
-  if ( isNinjaCounting ) {
+  if (isNinjaCounting) {
     // FIXME: this doesn't take into account overhead
     ninjaMillisTime += counterMillis;
   }
-  if ( isNinjaDowning ) {
+  if (isNinjaDowning) {
     // FIXME: this doesn't take into account overhead
     countdownTime -= counterMillis;
   }
@@ -257,7 +260,7 @@ void wifiSetup() {
 
   //flash dashes
   for (int t = 0; t < 3; t++) {
-    digitWrite(t, 20, 0); //blank
+    digitWrite(t, 20, 0);  //blank
     strip[t].show();
     segLight(t, 7, 6);
     segLight(t, 17, 6);
@@ -266,20 +269,19 @@ void wifiSetup() {
 
   // res = wm.autoConnect(); // auto generated AP name from chipid
   // res = wm.autoConnect("AutoConnectAP"); // anonymous ap
-  res = wm.autoConnect("RaceTimer", "neonraptor"); // password protected ap
+  res = wm.autoConnect("RaceTimer", "neonraptor");  // password protected ap
 
   if (!res) {
     Serial.println("Failed to connect");
     // ESP.restart();
     for (int t = 0; t < 3; t++) {
-      digitWrite(t, 20, 0); //blank
+      digitWrite(t, 20, 0);  //blank
       strip[t].show();
       segLight(t, 7, 1);
       segLight(t, 17, 1);
       strip[t].show();
     }
-  }
-  else {
+  } else {
     //if you get here you have connected to the WiFi
     Serial.println("connected...yeey :)");
 
@@ -310,13 +312,12 @@ void wifiSetup() {
     strip[1].show();
     digitWrite(0, 20, 0);
     strip[0].show();
-
   }
 }
 void countdownSetup() {
   while (done == false) {
     dStartState = digitalRead(DSTARTPIN);
-    dStopState =  digitalRead(DSTOPPIN);
+    dStopState = digitalRead(DSTOPPIN);
     dPauseState = digitalRead(DPAUSEPIN);
     dResetState = digitalRead(DRESETPIN);
     switchVal = digitalRead(switchPin);
@@ -326,54 +327,54 @@ void countdownSetup() {
       // Increment the value
       if (Select == 0) {
         Cseconds++;
-        digitWrite(0, (Cseconds % 10) + 10, dispColor);//sec ones
-        digitWrite(0, (Cseconds / 10), dispColor);// sec tens
+        digitWrite(0, (Cseconds % 10) + 10, dispColor);  //sec ones
+        digitWrite(0, (Cseconds / 10), dispColor);       // sec tens
         strip[0].show();
 
         if (Cseconds >= 60) {
           Cseconds = 0;
-          digitWrite(0, (Cseconds % 10) + 10, dispColor); // 0 sec ones
-          digitWrite(0, Cseconds / 10, dispColor); // 0 sec tens
+          digitWrite(0, (Cseconds % 10) + 10, dispColor);  // 0 sec ones
+          digitWrite(0, Cseconds / 10, dispColor);         // 0 sec tens
           strip[0].show();
 
           Cminutes++;
-          digitWrite(1, (Cminutes % 10) + 10, dispColor);//min ones
-          digitWrite(1, (Cminutes / 10), dispColor);// min tens
+          digitWrite(1, (Cminutes % 10) + 10, dispColor);  //min ones
+          digitWrite(1, (Cminutes / 10), dispColor);       // min tens
           strip[1].show();
 
           if (Cminutes >= 60) {
             Cminutes = 0;
-            digitWrite(1, (Cminutes % 10) + 10, dispColor); // 0 min ones
-            digitWrite(1, Cminutes / 10, dispColor); // 0 min tens
+            digitWrite(1, (Cminutes % 10) + 10, dispColor);  // 0 min ones
+            digitWrite(1, Cminutes / 10, dispColor);         // 0 min tens
             strip[1].show();
 
             Chours++;
-            digitWrite(2, (Chours % 10) + 10, dispColor);// hrs ones
-            digitWrite(2, (Chours / 10), dispColor);// hrs tens
+            digitWrite(2, (Chours % 10) + 10, dispColor);  // hrs ones
+            digitWrite(2, (Chours / 10), dispColor);       // hrs tens
             strip[2].show();
           }
         }
       } else if (Select == 1) {
         Cminutes++;
-        digitWrite(1, (Cminutes % 10) + 10, dispColor);//min ones
-        digitWrite(1, (Cminutes / 10), dispColor);// min tens
+        digitWrite(1, (Cminutes % 10) + 10, dispColor);  //min ones
+        digitWrite(1, (Cminutes / 10), dispColor);       // min tens
         strip[1].show();
 
         if (Cminutes >= 60) {
           Cminutes = 0;
-          digitWrite(1, (Cminutes % 10) + 10, dispColor); // 0 min ones
-          digitWrite(1, Cminutes / 10, dispColor); // 0 min tens
+          digitWrite(1, (Cminutes % 10) + 10, dispColor);  // 0 min ones
+          digitWrite(1, Cminutes / 10, dispColor);         // 0 min tens
           strip[1].show();
 
           Chours++;
-          digitWrite(2, (Chours % 10) + 10, dispColor);// hrs ones
-          digitWrite(2, (Chours / 10), dispColor);// hrs tens
+          digitWrite(2, (Chours % 10) + 10, dispColor);  // hrs ones
+          digitWrite(2, (Chours / 10), dispColor);       // hrs tens
           strip[2].show();
         }
       } else if (Select == 2) {
         Chours++;
-        digitWrite(2, (Chours % 10) + 10, dispColor);// hrs ones
-        digitWrite(2, (Chours / 10), dispColor);// hrs tens
+        digitWrite(2, (Chours % 10) + 10, dispColor);  // hrs ones
+        digitWrite(2, (Chours / 10), dispColor);       // hrs tens
         strip[2].show();
       }
     }
@@ -383,74 +384,74 @@ void countdownSetup() {
       // Decrement the value
       if (Select == 0) {
         Cseconds--;
-        digitWrite(0, (Cseconds % 10) + 10, dispColor);//sec ones
-        digitWrite(0, (Cseconds / 10), dispColor);// sec tens
+        digitWrite(0, (Cseconds % 10) + 10, dispColor);  //sec ones
+        digitWrite(0, (Cseconds / 10), dispColor);       // sec tens
         strip[0].show();
 
         if (Cseconds < 0) {
           Cseconds = 59;
-          digitWrite(0, (Cseconds % 10) + 10, dispColor);//sec ones
-          digitWrite(0, (Cseconds / 10), dispColor);// sec tens
+          digitWrite(0, (Cseconds % 10) + 10, dispColor);  //sec ones
+          digitWrite(0, (Cseconds / 10), dispColor);       // sec tens
           strip[0].show();
 
           Cminutes--;
-          digitWrite(1, (Cminutes % 10) + 10, dispColor); // 0 min ones
-          digitWrite(1, Cminutes / 10, dispColor); // 0 min tens
+          digitWrite(1, (Cminutes % 10) + 10, dispColor);  // 0 min ones
+          digitWrite(1, Cminutes / 10, dispColor);         // 0 min tens
           strip[1].show();
 
           if (Cminutes < 0) {
             Cminutes = 59;
-            digitWrite(1, (Cminutes % 10) + 10, dispColor);// 0 min ones
-            digitWrite(1, Cminutes / 10, dispColor); // 0 min tens
+            digitWrite(1, (Cminutes % 10) + 10, dispColor);  // 0 min ones
+            digitWrite(1, Cminutes / 10, dispColor);         // 0 min tens
             strip[1].show();
 
             Chours--;
-            digitWrite(2, (Chours % 10) + 10, dispColor);// hrs ones
-            digitWrite(2, (Chours / 10), dispColor);// hrs tens
+            digitWrite(2, (Chours % 10) + 10, dispColor);  // hrs ones
+            digitWrite(2, (Chours / 10), dispColor);       // hrs tens
             strip[2].show();
 
             if (Chours < 0) {
               Chours = 0;
-              digitWrite(2, (Chours % 10) + 10, dispColor);// hrs ones
-              digitWrite(2, (Chours / 10), dispColor);// hrs tens
+              digitWrite(2, (Chours % 10) + 10, dispColor);  // hrs ones
+              digitWrite(2, (Chours / 10), dispColor);       // hrs tens
               strip[2].show();
             }
           }
         }
       } else if (Select == 1) {
         Cminutes--;
-        digitWrite(1, (Cminutes % 10) + 10, dispColor);// 0 min ones
-        digitWrite(1, Cminutes / 10, dispColor); // 0 min tens
+        digitWrite(1, (Cminutes % 10) + 10, dispColor);  // 0 min ones
+        digitWrite(1, Cminutes / 10, dispColor);         // 0 min tens
         strip[1].show();
 
         if (Cminutes < 0) {
           Cminutes = 59;
-          digitWrite(1, (Cminutes % 10) + 10, dispColor);// 0 min ones
-          digitWrite(1, Cminutes / 10, dispColor); // 0 min tens
+          digitWrite(1, (Cminutes % 10) + 10, dispColor);  // 0 min ones
+          digitWrite(1, Cminutes / 10, dispColor);         // 0 min tens
           strip[1].show();
 
           Chours--;
-          digitWrite(2, (Chours % 10) + 10, dispColor);// hrs ones
-          digitWrite(2, (Chours / 10), dispColor);// hrs tens
+          digitWrite(2, (Chours % 10) + 10, dispColor);  // hrs ones
+          digitWrite(2, (Chours / 10), dispColor);       // hrs tens
           strip[2].show();
 
           if (Chours < 0) {
             Chours = 0;
-            digitWrite(2, (Chours % 10) + 10, dispColor);// hrs ones
-            digitWrite(2, (Chours / 10), dispColor);// hrs tens
+            digitWrite(2, (Chours % 10) + 10, dispColor);  // hrs ones
+            digitWrite(2, (Chours / 10), dispColor);       // hrs tens
             strip[2].show();
           }
         }
       } else if (Select == 2) {
         Chours--;
-        digitWrite(2, (Chours % 10) + 10, dispColor);// hrs ones
-        digitWrite(2, (Chours / 10), dispColor);// hrs tens
+        digitWrite(2, (Chours % 10) + 10, dispColor);  // hrs ones
+        digitWrite(2, (Chours / 10), dispColor);       // hrs tens
         strip[2].show();
 
         if (Chours < 0) {
           Chours = 0;
-          digitWrite(2, (Chours % 10) + 10, dispColor);// hrs ones
-          digitWrite(2, (Chours / 10), dispColor);// hrs tens
+          digitWrite(2, (Chours % 10) + 10, dispColor);  // hrs ones
+          digitWrite(2, (Chours / 10), dispColor);       // hrs tens
           strip[2].show();
         }
       }
@@ -467,7 +468,7 @@ void countdownSetup() {
       }
     }
     for (int t = 0; t < 3; t++) {
-      segLight(t, 8, 0); //blank
+      segLight(t, 8, 0);  //blank
       strip[t].show();
     }
     if (Select == 0) {
@@ -484,28 +485,28 @@ void countdownSetup() {
     }
 
 
-    if (dStopState != dStopLastState) { //for debouncing
-      if (dStopState == LOW) { //the reset button is pushed
+    if (dStopState != dStopLastState) {  //for debouncing
+      if (dStopState == LOW) {           //the reset button is pushed
         done = true;
       }
-      dStopLastState = dStopState; //for debouncing
+      dStopLastState = dStopState;  //for debouncing
     }
   }
   countdownTime = (Chours * 3600) + (Cminutes * 60) + Cseconds;
 
 
   for (int t = 0; t < 3; t++) {
-    digitWrite(t, 20, 0); //blank
+    digitWrite(t, 20, 0);  //blank
     strip[t].show();
   }
-  digitWrite(0, (Cseconds % 10) + 10, 5);//sec ones
-  digitWrite(0, (Cseconds / 10), 5);// sec tens
+  digitWrite(0, (Cseconds % 10) + 10, 5);  //sec ones
+  digitWrite(0, (Cseconds / 10), 5);       // sec tens
   strip[0].show();
-  digitWrite(1, (Cminutes % 10) + 10, 5);// 0 min ones
-  digitWrite(1, Cminutes / 10, 5); // 0 min tens
+  digitWrite(1, (Cminutes % 10) + 10, 5);  // 0 min ones
+  digitWrite(1, Cminutes / 10, 5);         // 0 min tens
   strip[1].show();
-  digitWrite(2, (Chours % 10) + 10, 5);// hrs ones
-  digitWrite(2, (Chours / 10), 5);// hrs tens
+  digitWrite(2, (Chours % 10) + 10, 5);  // hrs ones
+  digitWrite(2, (Chours / 10), 5);       // hrs tens
   strip[2].show();
   delay(1000);
   countdownSet = true;
