@@ -16,8 +16,8 @@ void updateDisplay1() {
   //2 = green
   //3 = blue
   //4 = white
-  //5 =  yellow
-  //
+  //5 = yellow
+  //6 = light blue
   if (hrsTens == 0) {
     digitWrite(2, hrsTens, 0);
     strip[2].show();
