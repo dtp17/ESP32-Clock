@@ -1,11 +1,18 @@
-#ifdef ESP32
 #include <WiFi.h>
-#else
-#include <ESP8266WiFi.h>
-#endif
 #include <time.h>
 #include <Adafruit_NeoPixel.h>
 #include <WiFiManager.h>  // https://github.com/tzapu/WiFiManager
+#include <WiFiClient.h>
+#include <WebServer.h>
+#include <ESPmDNS.h>
+#include <Update.h>
+
+const char* host = "ESP32 CLOCK";
+String globalString = "";
+
+WebServer server(80);
+
+//192.168.0.49
 
 #define NUMPIXELS 48  // # of LEDs in a strip (some are actually 56, some 57
 // due to dots), each strip is a digit
@@ -21,8 +28,8 @@ Adafruit_NeoPixel strip[] = {  //here is the variable for the multiple strips
 };
 
 WiFiManager wm;
-int bright = 190;      //brightness for all pixels 0-255 range, 32 being dim
-int autoBright;  // auto brightness
+int bright = 190;  //brightness for all pixels 0-255 range, 32 being dim
+int autoBright;    // auto brightness
 bool flash = true;
 int GMTOffset = 0;                 //Replace with your GMT Offset in seconds
 int daylightOffset = 3600;         // Replace with your daylight savings offset in seconds
@@ -183,7 +190,7 @@ void loop() {
     if (Setup == false) {
       wifiSetup();
     }
-    dispColor = 1;
+    dispColor = 6;
     updateDisplay4();
     automaticTime();
     ninjaMillisTime = 0;
@@ -192,6 +199,9 @@ void loop() {
     dispColor = 2;
     Settings();
     updateDisplay5();
+  }
+  if (Setup == true) {
+    server.handleClient();
   }
 }
 
@@ -285,8 +295,9 @@ void wifiSetup() {
     //if you get here you have connected to the WiFi
     Serial.println("connected...yeey :)");
 
-
+    OTAsetup();
     configTime(GMTOffset, daylightOffset, "pool.ntp.org", "time.nist.gov");
+
     Setup = true;
 
     digitWrite(2, 20, 0);
